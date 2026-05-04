@@ -1,0 +1,41 @@
+# Agent 定义 (agent.yaml)
+
+> **作用**: 定义 Kimi Agent 的行为、工具集和子 Agent
+> **工具**: Kimi Code CLI
+> **格式**: YAML
+
+## 影响范围
+
+- **作用域**: Agent 自身及子 Agent
+- **加载时机**: Agent 初始化时
+- **继承**: 子 Agent 可通过 `extend` 继承父 Agent
+
+## 格式说明
+
+```yaml
+version: 1
+agent:
+  name: "planner"
+  system_prompt_path: ./system.md
+  system_prompt_args:
+    ROLE_ADDITIONAL: "你是一位架构规划师..."
+  tools:
+    - "kimi_cli.tools.file:ReadFile"
+    - "kimi_cli.tools.file:Glob"
+    - "kimi_cli.tools.agent:Agent"
+  subagents:
+    coder:
+      path: ./coder.yaml
+      description: "执行代码编写的子 Agent"
+```
+
+## 关键字段
+
+| 字段 | 说明 |
+|------|------|
+| `system_prompt_path` | 系统提示模板路径 |
+| `system_prompt_args` | 注入模板的变量 |
+| `tools` | 可用工具列表（白名单） |
+| `subagents` | 子 Agent 定义 |
+| `allowed_tools` | 子 Agent 白名单 |
+| `exclude_tools` | 子 Agent 黑名单 |

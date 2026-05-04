@@ -1,0 +1,22 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local overrides
+CLAUDE.local.md
+AGENTS.local.md
+*.local.md
+
+# Logs
+*.log
+
+# Temporary / cache
+*.tmp
+.cache/
