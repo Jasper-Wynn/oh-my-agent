@@ -14,9 +14,14 @@
 
 ```markdown
 ---
-name: tester
 description: "专门写测试和运行测试"
 mode: subagent
+permission:
+  edit: ask
+  bash:
+    "*": ask
+    "npm test*": allow
+    "pnpm test*": allow
 ---
 
 # Tester

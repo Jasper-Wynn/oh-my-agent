@@ -331,15 +331,15 @@ trigger: glob  # always_on | model_decision | glob | manual
 | 通用 | Claude | Codex | Kimi | OpenCode | Cursor | Copilot | Windsurf |
 |------|--------|-------|------|----------|--------|---------|----------|
 | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `.cursorrules` / `.cursor/rules/base.mdc` | `.github/copilot-instructions.md` | `.windsurfrules` / `.windsurf/rules/*.md` |
-| `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skill/*/` | `.cursor/rules/*.mdc` | `.github/skills/*/` | `.windsurf/rules/*.md` |
+| `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skills/*/` | `.cursor/rules/*.mdc` | `.github/skills/*/` | `.windsurf/rules/*.md` |
 | `.agents/agents/` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` | `.opencode/agents/` | `.cursor/agents/` | `.github/agents/` | ⚠️ 不适用 |
-| `.agents/rules/` | `.claude/rules/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skill/*/` | `.cursor/rules/` | `.github/instructions/` | `.windsurf/rules/` |
+| `.agents/rules/` | `.claude/rules/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skills/*/` | `.cursor/rules/` | `.github/instructions/` | `.windsurf/rules/` |
 | `.agents/hooks/` | `settings.json` (hooks) | `~/.codex/hooks/` (脚本) | `~/.kimi/hooks/` (脚本) | `.opencode/hooks/` | `.cursor/hooks.json` | `.github/hooks/*.json` | `.windsurf/hooks.json` |
 | `.agents/prompts/` | `.claude/output-styles/` | `~/.codex/prompts/` | `~/.kimi/prompts/` | `.opencode/prompts/` | ✅ 支持 | `.github/prompts/` | ⚠️ 未确认 |
 | `.agents/context/` | `.claude/docs/` | `.agents/context/` | `.kimi/context/` | `.opencode/context/` | 无 | 无 | 无 |
-| `.agents/plans/` | Plan Mode | `PLANS.md` | Plan Mode | `.opencode/command/` | 无 | 无 | 无 |
+| `.agents/plans/` | Plan Mode | `PLANS.md` | Plan Mode | `.opencode/commands/` | 无 | 无 | 无 |
 | `.agents/memory/` | `~/.claude/projects/*/memory/` | 无 | 无 | 无 | 无 | 无 | `memory-bank/` |
-| `.agents/workflows/` | `.claude/workflows/` | `PLANS.md` | Plan Mode | `.opencode/command/` | 无 | 无 | 无 |
+| `.agents/workflows/` | `.claude/workflows/` | `PLANS.md` | Plan Mode | `.opencode/commands/` | 无 | 无 | 无 |
 
 ### 5.2 从各工具到通用
 
@@ -357,12 +357,12 @@ trigger: glob  # always_on | model_decision | glob | manual
 | OpenCode | 通用 | Cursor | 通用 | Copilot | 通用 | Windsurf | 通用 |
 |----------|------|--------|------|---------|------|----------|------|
 | `AGENTS.md` | `AGENTS.md` | `.cursorrules` | `AGENTS.md` | `copilot-instructions.md` | `AGENTS.md` | `.windsurfrules` | `AGENTS.md` |
-| `.opencode/skill/*/` | `.agents/skills/*/` | `.cursor/rules/*.mdc` | `.agents/rules/*.md` | `.github/skills/*/` | `.agents/skills/*/` | `.windsurf/rules/*.md` | `.agents/rules/*.md` |
-| `.opencode/agent/` | `.agents/agents/` | 无 | 无 | `.github/agents/` | `.agents/agents/` | 无 | 无 |
+| `.opencode/skills/*/` | `.agents/skills/*/` | `.cursor/rules/*.mdc` | `.agents/rules/*.md` | `.github/skills/*/` | `.agents/skills/*/` | `.windsurf/rules/*.md` | `.agents/rules/*.md` |
+| `.opencode/agents/` | `.agents/agents/` | 无 | 无 | `.github/agents/` | `.agents/agents/` | 无 | 无 |
 | `.opencode/hooks/` | `.agents/hooks/` | 无 | 无 | 无 | 无 | 无 | 无 |
 | `.opencode/prompts/` | `.agents/prompts/` | 无 | 无 | `.github/prompts/` | `.agents/prompts/` | 无 | 无 |
 | `.opencode/context/` | `.agents/context/` | 无 | 无 | 无 | 无 | 无 | 无 |
-| `.opencode/command/` | `.agents/workflows/` | 无 | 无 | 无 | 无 | 无 | 无 |
+| `.opencode/commands/` | `.agents/workflows/` | 无 | 无 | 无 | 无 | 无 | 无 |
 
 ---
 
@@ -439,8 +439,8 @@ ln -s ../AGENTS.md .codex/AGENTS.md
 ln -s ../.agents/skills .claude/skills
 ln -s ../.agents/skills .codex/skills
 ln -s ../.agents/skills .kimi/skills
-ln -s ../.agents/skills .opencode/skill
-ln -s ../.agents/agents .opencode/agent
+ln -s ../.agents/skills .opencode/skills
+ln -s ../.agents/agents .opencode/agents
 ln -s ../.agents/hooks .opencode/hooks
 ln -s ../.agents/prompts .opencode/prompts
 ln -s ../.agents/context .opencode/context

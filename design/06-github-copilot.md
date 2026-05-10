@@ -257,7 +257,7 @@ PROJECT ROOT
 ├── [LAYER 2: SPECIALISTS]
 │   "按需调用的专业 Agent"
 │   ├── .github/agents/*.agent.md
-│   ├── .opencode/agent/
+│   ├── .opencode/agents/
 │   └── .cursor/rules/security.mdc
 │
 └── [LAYER 3: CAPABILITIES]
@@ -275,8 +275,8 @@ PROJECT ROOT
 | GitHub Copilot | 通用 | Claude | Codex | Kimi | OpenCode |
 |----------------|------|--------|-------|------|----------|
 | `.github/copilot-instructions.md` | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` |
-| `.github/instructions/*.md` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skill/*/` |
+| `.github/instructions/*.md` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skills/*/` |
 | `.github/prompts/*.md` | `.agents/prompts/*.md` | `.claude/output-styles/` | `~/.codex/prompts/` | `~/.kimi/prompts/` | `.opencode/prompts/` |
-| `.github/agents/*.md` | `.agents/agents/*.md` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` | `.opencode/agent/` |
-| `.github/skills/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skill/*/` |
+| `.github/agents/*.md` | `.agents/agents/*.md` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` | `.opencode/agents/` |
+| `.github/skills/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skills/*/` |
 | `applyTo:` | `paths:` | `paths:` | Skill 描述 | Skill 描述 | Skill 描述 |

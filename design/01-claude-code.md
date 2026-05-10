@@ -281,6 +281,6 @@ Auto Memory                      (~/.claude/projects/<name>/memory/)
 | `.claude/hooks` (settings.json) | `.agents/hooks/` | `~/.codex/hooks/` (如支持) | `~/.kimi/hooks/` (如支持) | `.opencode/hooks/` |
 | `.claude/output-styles/*.md` | `.agents/output-styles/*.md` | 无直接等价 | 无直接等价 | 无直接等价 |
 | `.claude/docs/*.md` | `.agents/context/*.md` | `.agents/context/*.md` | `.agents/context/*.md` | `.opencode/context/*.md` |
-| `.claude/workflows/*.md` | `.agents/workflows/` | `.agents/workflows/` | `.agents/workflows/` | `.opencode/command/` |
+| `.claude/workflows/*.md` | `.agents/workflows/` | `.agents/workflows/` | `.agents/workflows/` | `.opencode/commands/` |
 | `src/*/CLAUDE.md` | `src/*/AGENTS.md` | `src/*/AGENTS.md` | `src/*/AGENTS.md` | `src/*/AGENTS.md` |
 | `~/.claude/projects/*/memory/` | `.agents/memory/` | 无直接等价 | 无直接等价 | 无直接等价 |

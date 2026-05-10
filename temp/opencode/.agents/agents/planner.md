@@ -8,24 +8,19 @@
 
 - **作用域**: 主会话
 - **加载时机**: Tab 键切换 或自动委派
-- **权限**: 可通过 `permissions` 精确控制
+- **权限**: 可通过 `permission` 精确控制
 
 ## 格式说明
 
-Markdown + YAML Frontmatter：
+Markdown + YAML Frontmatter（文件名即 agent 名称，无需 `name` 字段）：
 
 ```markdown
 ---
-name: planner
 description: "专门做架构设计，只读不写"
 mode: primary
+model: anthropic/claude-sonnet-4-20250514
 temperature: 0.1
-tools:
-  read: true
-  write: false
-  edit: false
-  bash: false
-permissions:
+permission:
   edit: deny
   bash: deny
 ---

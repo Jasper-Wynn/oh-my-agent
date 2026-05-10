@@ -53,7 +53,7 @@ your-project/
 │   ├── README.md                # 内部文档
 │   ├── VERSION                  # 版本号
 │   │
-│   ├── agent/                   # ★ AI Agent 定义
+│   ├── agents/                  # ★ AI Agent 定义
 │   │   ├── AGENT_INTEGRATION.md # Agent 集成指南
 │   │   ├── core/                # 主 Agent
 │   │   │   ├── 0-category.json  # 分类元数据
@@ -112,7 +112,7 @@ your-project/
 │   │       └── utils/
 │   │           └── image-specialist.md
 │   │
-│   ├── command/                 # ★ Slash 命令定义
+│   ├── commands/                # ★ Slash 命令定义
 │   │   ├── clean.md
 │   │   ├── commit.md
 │   │   ├── test.md
@@ -187,7 +187,7 @@ your-project/
 │   │   ├── post_tool_use.py
 │   │   └── session_start.py
 │   │
-│   ├── skill/                   # ★ 可复用 Skills
+│   ├── skills/                  # ★ 可复用 Skills
 │   │   ├── agent-factory/SKILL.md
 │   │   ├── aws-solution-architect/SKILL.md
 │   │   ├── changelog-generator/SKILL.md
@@ -256,7 +256,7 @@ your-project/
 │   │   │   └── threat-mitigation-mapping/SKILL.md
 │   │   └── stripe-integration/SKILL.md
 │   │
-│   ├── plugin/                  # 扩展/插件
+│   ├── plugins/                 # 扩展/插件
 │   │   ├── agent-validator.ts
 │   │   ├── notify.ts
 │   │   ├── docs/
@@ -265,7 +265,7 @@ your-project/
 │   │   │   └── validator/
 │   │   └── tsconfig.json
 │   │
-│   ├── tool/                    # 自定义工具
+│   ├── tools/                   # 自定义工具
 │   │   ├── index.ts
 │   │   ├── README.md
 │   │   ├── env/
@@ -378,6 +378,17 @@ your-project/
 - 类似于 Cursor 的 rules，包含 LLM 上下文指令
 - 通过 `/init` 命令自动扫描项目并生成或改进
 
+**发现顺序**（从当前目录向上遍历到 git worktree）：
+1. `AGENTS.md` — 通用 agent 指令
+2. `CLAUDE.md` — Claude 特定指令
+3. `CONTEXT.md` — 上下文和背景信息
+
+**全局文件**：
+- `~/.opencode/AGENTS.md` — 全局 OpenCode 指令
+- `~/.claude/CLAUDE.md` — 全局 Claude 指令
+
+**配置指令**：`opencode.json` 中的 `instructions` 字段可以指定额外文件路径。
+
 **`/init` 命令扫描内容**：
 - build, lint, test 命令
 - 命令顺序和验证步骤
@@ -389,34 +400,61 @@ your-project/
 
 ```json
 {
+  "$schema": "https://opencode.ai/config.json",
   "instructions": ["packages/*/AGENTS.md"],
   "permission": {
+    "edit": "ask",
+    "bash": "ask",
     "skill": {
       "*": "allow"
     }
   },
   "agent": {
     "custom-agent": {
-      "tools": {
-        "skill": false
+      "mode": "subagent",
+      "description": "Custom agent for specific tasks",
+      "permission": {
+        "skill": {
+          "internal-*": "deny"
+        }
       }
     }
   }
 }
 ```
 
-### 3.3 Agent 定义 (`agent/*.md`)
+### 3.3 Agent 定义 (`agents/*.md`)
 
-OpenCode 的 Agent 定义是 Markdown 文件，包含：
-- Agent 名称和描述
-- 角色定义
-- 可用工具
-- 行为指令
+OpenCode 的 Agent 定义是 Markdown 文件，文件名即 agent 名称。支持 YAML frontmatter：
+
+**必填字段**：
+- `description` — agent 用途描述（用于自动匹配）
+
+**常用字段**：
+- `mode` — `primary`（主 agent，Tab 切换）/ `subagent`（子 agent，@ 调用）/ `all`
+- `model` — 模型 ID，格式 `provider/model-id`
+- `temperature` — 0.0-1.0，默认模型相关
+- `permission` — 权限对象，`ask` / `allow` / `deny`
+- `steps` — 最大迭代步数
+- `hidden` — `true` 时隐藏于 @ 自动补全菜单
+- `color` — UI 显示颜色（hex 或主题色名）
+
+⚠️ `tools` 字段已废弃，请使用 `permission`。
 
 ```markdown
+---
+description: Backend architecture expert specializing in Node.js/TypeScript APIs
+mode: subagent
+model: anthropic/claude-sonnet-4-20250514
+temperature: 0.1
+permission:
+  read: allow
+  edit: ask
+  bash: deny
+---
+
 # Backend Specialist
 
-## Role
 You are a backend architecture expert specializing in Node.js/TypeScript APIs.
 
 ## Capabilities
@@ -424,16 +462,13 @@ You are a backend architecture expert specializing in Node.js/TypeScript APIs.
 - Optimize database queries
 - Implement authentication and authorization
 
-## Tools
-- file_read, file_write, shell
-
 ## Guidelines
 - Always validate input with Zod
 - Use dependency injection patterns
 - Write integration tests for all endpoints
 ```
 
-### 3.4 Skills (`.opencode/skill/*/SKILL.md`)
+### 3.4 Skills (`.opencode/skills/*/SKILL.md`)
 
 OpenCode Skills 使用开放标准格式：
 
@@ -453,7 +488,7 @@ compatibility: Requires Git >= 2.20
 5. Push to remote
 ```
 
-**Skill 发现路径** (向上遍历)：
+**Skill 发现路径** (向上遍历，直到 git worktree)：
 1. `.opencode/skills/<name>/SKILL.md`
 2. `.claude/skills/<name>/SKILL.md` (Claude 兼容)
 3. `.agents/skills/<name>/SKILL.md` (通用兼容)
@@ -463,22 +498,39 @@ compatibility: Requires Git >= 2.20
 - `~/.claude/skills/<name>/SKILL.md`
 - `~/.agents/skills/<name>/SKILL.md`
 
-### 3.5 Commands (`command/*.md`)
+**Frontmatter 要求**：
+- `name` (required) — 必须与目录名一致，1-64 字符，小写字母数字和单连字符
+- `description` (required) — 1-1024 字符
+- `license` (optional)
+- `compatibility` (optional)
+- `metadata` (optional) — 字符串到字符串的映射
 
-OpenCode 的 Slash 命令定义：
+### 3.5 Commands (`commands/*.md`)
+
+OpenCode 的 Slash 命令定义，文件名即命令名称：
 
 ```markdown
-# /test
+---
+description: Run tests with coverage
+agent: build
+model: anthropic/claude-sonnet-4-20250514
+---
 
-## Purpose
-Run the test suite with appropriate coverage reporting.
-
-## Steps
-1. Detect test framework (jest/vitest/pytest)
-2. Run tests with coverage
-3. Report failing tests
-4. Suggest fixes for failures
+Run the full test suite with coverage report and show any failures.
+Focus on the failing tests and suggest fixes.
 ```
+
+**Frontmatter 字段**：
+- `description` (required)
+- `agent` (optional) — 执行此命令的 agent
+- `model` (optional) — 覆盖默认模型
+- `subtask` (optional) — `true` 时强制以 subagent 执行
+
+**模板语法**：
+- `$ARGUMENTS` — 用户传入的全部参数
+- `$1`, `$2`, `$3`... — 位置参数
+- `!`command`` — 注入 shell 命令输出
+- `@filename` — 引用文件内容
 
 ### 3.6 Context (`context/`)
 
@@ -503,19 +555,23 @@ Run the test suite with appropriate coverage reporting.
 
 ### 3.8 Hooks (`hooks/`)
 
-生命周期钩子：
-- `pre_tool_use.py` — 工具调用前
-- `post_tool_use.py` — 工具调用后
-- `session_start.py` — 会话开始时
+⚠️ OpenCode 官方文档未将 hooks 作为独立功能进行标准化说明。官方提到 "Plugins extend OpenCode with custom tools, hooks, and integrations"，hooks 属于插件系统的一部分。
 
-### 3.9 Plugins (`plugin/`)
+社区实践中存在的生命周期钩子：
+- `pre_tool_use` — 工具调用前
+- `post_tool_use` — 工具调用后
+- `session_start` — 会话开始时
+
+如需使用，建议通过 `.opencode/plugins/` 或 `plugin` 配置项实现。
+
+### 3.9 Plugins (`plugins/`)
 
 OpenCode 插件系统：
 - `agent-validator.ts` — Agent 验证器
 - `notify.ts` — 通知插件
 - 使用 TypeScript 编写
 
-### 3.10 Tools (`tool/`)
+### 3.10 Tools (`tools/`)
 
 自定义工具：
 - `env/` — 环境工具
@@ -535,9 +591,9 @@ OpenCode 插件系统：
 | `.opencode/context/` | 项目 | ⚠️ | 领域知识 (社区约定，非官方标准) |
 | `.opencode/hooks/` | 项目 | ⚠️ | 生命周期钩子 (未在官方文档中确认) |
 | `.opencode/prompts/` | 项目 | ⚠️ | 提示词变体 (未在官方文档中确认) |
-| `.opencode/plugin/` | 项目 | ⚠️ | 插件 (未在官方文档中确认) |
-| `.opencode/tool/` | 项目 | ⚠️ | 自定义工具 (未在官方文档中确认) |
-| `.opencode/skill/*/SKILL.md` | 项目 | 是 | Skills |
+| `.opencode/plugins/` | 项目 | ⚠️ | 插件 (未在官方文档中确认) |
+| `.opencode/tools/` | 项目 | ⚠️ | 自定义工具 (未在官方文档中确认) |
+| `.opencode/skills/*/SKILL.md` | 项目 | 是 | Skills |
 | `~/.config/opencode/skills/` | 全局 | 否 | 全局 Skills |
 
 ---
@@ -574,12 +630,12 @@ Express.js API server.
 | OpenCode | 通用 | Claude | Codex | Kimi |
 |----------|------|--------|-------|------|
 | `AGENTS.md` | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` |
-| `.opencode/skill/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` |
-| `.opencode/agents/` | `.agents/agents/` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` |
-| `.opencode/commands/` | `.agents/commands/` | Plan Mode | `PLANS.md` | `plan mode` |
+| `.opencode/skills/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` |
+| `.opencode/agents/*.md` | `.agents/agents/` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` |
+| `.opencode/commands/*.md` | `.agents/commands/` | Plan Mode | `PLANS.md` | `plan mode` |
 | `.opencode/context/` | `.agents/context/` | `.claude/docs/` | `.agents/context/` | `.kimi/context/` | ⚠️ 社区约定 |
 | `.opencode/hooks/` | `.agents/hooks/` | `.claude/settings.json` (hooks) | `~/.codex/hooks/` | `~/.kimi/hooks/` |
 | `.opencode/prompts/` | `.agents/prompts/` | `.claude/output-styles/` | `~/.codex/prompts/` | `~/.kimi/prompts/` |
-| `.opencode/plugin/` | `.agents/plugins/` | 无直接等价 | 无直接等价 | 无直接等价 |
-| `.opencode/tool/` | `.agents/tools/` | 无直接等价 | 无直接等价 | 无直接等价 |
+| `.opencode/plugins/` | `.agents/plugins/` | 无直接等价 | 无直接等价 | 无直接等价 |
+| `.opencode/tools/` | `.agents/tools/` | 无直接等价 | 无直接等价 | 无直接等价 |
 | `opencode.json` | `.agents/config.json` | `~/.claude/settings.json` | `~/.codex/config.toml` | `~/.kimi/config.toml` |

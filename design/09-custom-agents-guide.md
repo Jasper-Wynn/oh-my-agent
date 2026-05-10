@@ -682,7 +682,7 @@ When this skill is invoked:
 └── 300-tester.md -> ../../.agents/modes/tester.md
 
 # OpenCode
-.opencode/agent/
+.opencode/agents/
 ├── planner.md -> ../../.agents/agents/planner/agent.md
 ├── builder.md -> ../../.agents/agents/builder/agent.md
 └── tester.md -> ../../.agents/agents/tester/agent.md

@@ -171,7 +171,7 @@ Cursor 支持读取 `AGENTS.md` 作为跨工具兼容层：
 | Cursor | 通用 | Claude | Codex | Kimi | OpenCode |
 |--------|------|--------|-------|------|----------|
 | `.cursorrules` | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` |
-| `.cursor/rules/*.mdc` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skill/*/` |
+| `.cursor/rules/*.mdc` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skills/*/` |
 | `~/.cursor/rules/*.mdc` | `~/.agents/rules/*.md` | `~/.claude/rules/*.md` | `~/.agents/skills/*/` | `~/.agents/skills/*/` | `~/.config/opencode/skills/*/` |
 | `.cursorignore` | `.agents/ignore` | `.claude/ignore` | `.codexignore` | `.kimiignore` | `.opencodeignore` |
 | `alwaysApply: true` | 无 globs 的 rule | 无 globs 的 rule | 无限制的 skill | 无限制的 skill | 始终加载的 skill |

@@ -1,46 +1,74 @@
-# 项目指令 (AGENTS.md)
+# OpenCode 项目模板
 
-> **作用**: OpenCode 项目级主指令文件
-> **工具**: OpenCode
-> **文件名**: `AGENTS.md`
+## 快速开始
 
-## 影响范围
+1. 将本目录内容复制到你的项目根目录
+2. 编辑 `AGENTS.md` 添加项目特定指令
+3. 编辑 `.opencode/agents/*.md` 定义自定义 Agent
+4. 编辑 `opencode.json` 配置权限和模型
 
-- **作用域**: 整个项目
-- **加载时机**: 每次会话开始时
-- **初始化**: 可用 `/init` 命令自动生成
+## 目录说明
 
-## 格式说明
-
-纯 Markdown：
-
-```markdown
-# Project Name
-
-## Tech Stack
-- **Framework**: Next.js 14
-- **Language**: TypeScript
-
-## Commands
-- `npm run dev` — 开发
-- `npm test` — 测试
-
-## Code Standards
-- Use strict TypeScript
-- Prefer named exports
+```
+.
+├── AGENTS.md                  # 项目级指令（OpenCode 自动读取）
+├── opencode.json              # 主配置文件
+├── .opencode/                 # OpenCode 生态目录
+│   ├── agents/                # Agent 定义（Markdown + YAML frontmatter）
+│   └── skills/                # Skills（SKILL.md 格式）
+└── .agents/                   # 通用兼容层
+    ├── agents/                # 通用 Agent 定义
+    ├── skills/                # 通用 Skills
+    ├── rules/                 # 规则文件
+    ├── context/               # 上下文/领域知识
+    ├── hooks/                 # 生命周期钩子（如支持）
+    ├── plans/                 # 计划模板
+    ├── prompts/               # 提示词变体
+    └── memory/                # 记忆文件
 ```
 
-## 配置
+## 关键文件
 
-`opencode.json` 用于配置 Agent、Skills 权限等：
+### AGENTS.md
+OpenCode 会自动发现从当前目录向上到 git worktree 根目录的 `AGENTS.md`、`CLAUDE.md`、`CONTEXT.md` 文件。
+
+### opencode.json
 ```json
 {
-  "instructions": ["packages/*/AGENTS.md"],
-  "skills": {
-    "permissions": {
-      "allow": ["git-release"],
-      "deny": ["dangerous-skill"]
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["docs/guidelines.md"],
+  "permission": {
+    "edit": "ask",
+    "bash": "ask"
+  },
+  "agent": {
+    "planner": {
+      "mode": "primary",
+      "description": "Architecture planning specialist",
+      "permission": {
+        "edit": "deny"
+      }
     }
   }
 }
 ```
+
+### Agent 定义 (.opencode/agents/*.md)
+文件名即 agent 名称，frontmatter 支持：
+- `description` (required)
+- `mode`: `primary` | `subagent` | `all`
+- `model`: `provider/model-id`
+- `temperature`: 0.0 - 1.0
+- `permission`: 权限对象（`ask` | `allow` | `deny`）
+- `steps`: 最大迭代步数
+- `hidden`: 是否隐藏于 @ 自动补全
+
+⚠️ `tools` 字段已废弃，请使用 `permission`。
+
+## 更多参考
+
+- [OpenCode 官方文档](https://opencode.ai/docs/)
+- [Agent 配置](https://opencode.ai/docs/agents/)
+- [Config 配置](https://opencode.ai/docs/config/)
+- [Skills 系统](https://opencode.ai/docs/skills/)
+- [Commands 系统](https://opencode.ai/docs/commands/)

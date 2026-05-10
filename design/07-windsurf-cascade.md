@@ -185,7 +185,7 @@ dist/
 | Windsurf | 通用 | Claude | Codex | Kimi | OpenCode | Cursor |
 |----------|------|--------|-------|------|----------|--------|
 | `.windsurfrules` | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `.cursorrules` |
-| `.windsurf/rules/*.md` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skill/*/` | `.cursor/rules/*.mdc` |
+| `.windsurf/rules/*.md` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skills/*/` | `.cursor/rules/*.mdc` |
 | `memory-bank/` | `.agents/memory/` | `~/.claude/projects/*/memory/` | 无直接等价 | 无直接等价 | 无直接等价 | 无直接等价 |
 | `.codeiumignore` | `.agents/ignore` | `.claude/ignore` | `.codexignore` | `.kimiignore` | `.opencodeignore` | `.cursorignore` |
 | `trigger: always_on` | 无 globs 的 rule | 无 globs 的 rule | 无限制的 skill | 无限制的 skill | 始终加载的 skill | `alwaysApply: true` |

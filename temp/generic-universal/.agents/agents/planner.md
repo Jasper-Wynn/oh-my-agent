@@ -15,19 +15,16 @@
 
 ```markdown
 ---
-name: planner
 description: "Architecture planning specialist, read-only"
 mode: primary       # primary | subagent
-# OpenCode / Kimi 用
-tools:
-  read: true
-  write: false
-permissions:
+# OpenCode 用
+model: anthropic/claude-sonnet-4-20250514
+temperature: 0.1
+permission:
   edit: deny
   bash: deny
 # Copilot 用
 model: gpt-5
-tools: ["file_read"]
 permissions:
   file_write: deny
 ---
@@ -41,7 +38,7 @@ permissions:
 
 | 工具 | 目标路径 | 备注 |
 |------|---------|------|
-| OpenCode | `.opencode/agent/planner.md` | 直接可用 |
+| OpenCode | `.opencode/agents/planner.md` | 直接可用 |
 | Kimi | `.kimi/agents/planner/` (agent.yaml + system.md) | 需拆分 |
 | Copilot | `.github/agents/planner.agent.md` | 直接可用 |
 | Codex | `.agents/skills/planner/SKILL.md` | 作为 Skill |
