@@ -345,6 +345,6 @@ $skill-installer linear
 | `AGENTS.override.md` | `.agents/override.md` | `CLAUDE.local.md` | 子目录 `AGENTS.md` | `opencode.json` 配置 |
 | `.agents/skills/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.kimi/skills/*/` | `.opencode/skills/*/` |
 | `~/.codex/config.toml` | `.agents/config.toml` | `~/.claude/settings.json` | `~/.kimi/config.toml` | `~/.config/opencode/config.json` |
-| `PLANS.md` | `.agents/plans/` | `.claude/workflows/` | `plan mode` | `.opencode/command/` |
-| `~/.codex/hooks/` | `.agents/hooks/` | `.claude/hooks/` | `~/.kimi/hooks/` | `.opencode/hooks/` |
-| `~/.codex/prompts/` | `.agents/prompts/` | `.claude/prompts/` | `~/.kimi/prompts/` | `.opencode/prompts/` |
+| `PLANS.md` | `.agents/plans/` | Plan Mode | `plan mode` | `.opencode/command/` |
+| `~/.codex/hooks/` | `.agents/hooks/` | `.claude/settings.json` (hooks) | `~/.kimi/hooks/` | `.opencode/hooks/` |
+| `~/.codex/prompts/` | `.agents/prompts/` | `.claude/output-styles/` | `~/.kimi/prompts/` | `.opencode/prompts/` |

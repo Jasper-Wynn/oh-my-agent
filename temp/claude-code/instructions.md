@@ -54,9 +54,14 @@
 | Skills | `.claude/skills/<name>/SKILL.md` | [Skills](https://code.claude.com/docs/en/skills) |
 | 子代理 | `.claude/agents/*.md` | [Subagents](https://code.claude.com/docs/en/sub-agents) |
 | 输出风格 | `.claude/output-styles/*.md` | [Output Styles](https://code.claude.com/docs/en/output-styles) |
+| 共享文档 | `.claude/docs/*.md` | [Skills](https://code.claude.com/docs/en/skills)（Skills 可引用） |
 | MCP | `.mcp.json` | [MCP](https://code.claude.com/docs/en/mcp) |
-| 计划 | `~/.claude/plans/` (默认) | [Plan Mode](https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode) |
+| 计划 | Plan Mode（计划文件默认存于 `~/.claude/`，可通过 `plansDirectory` 配置） | [Plan Mode](https://code.claude.com/docs/en/permission-modes#analyze-before-you-edit-with-plan-mode) |
 | 记忆 | `~/.claude/projects/<project>/memory/` | [Auto Memory](https://code.claude.com/docs/en/memory#auto-memory) |
+
+## 关于 Hooks
+
+Claude Code 的 Hooks **不是独立的脚本文件**，而是通过 `.claude/settings.json` 中的 JSON 配置的确定性动作。详见 `design/01-claude-code.md` 的 Hooks 章节。
 
 ## 来源
 

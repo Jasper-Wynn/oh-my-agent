@@ -276,7 +276,7 @@ PROJECT ROOT
 |----------------|------|--------|-------|------|----------|
 | `.github/copilot-instructions.md` | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` |
 | `.github/instructions/*.md` | `.agents/rules/*.md` | `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skill/*/` |
-| `.github/prompts/*.md` | `.agents/prompts/*.md` | `.claude/workflows/` | `~/.codex/prompts/` | `~/.kimi/prompts/` | `.opencode/prompts/` |
+| `.github/prompts/*.md` | `.agents/prompts/*.md` | `.claude/output-styles/` | `~/.codex/prompts/` | `~/.kimi/prompts/` | `.opencode/prompts/` |
 | `.github/agents/*.md` | `.agents/agents/*.md` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` | `.opencode/agent/` |
 | `.github/skills/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` | `.opencode/skill/*/` |
 | `applyTo:` | `paths:` | `paths:` | Skill 描述 | Skill 描述 | Skill 描述 |

@@ -47,18 +47,22 @@ your-project/
 │   │   ├── api-design.md        # API 设计规范 (路径限定)
 │   │   ├── security.md          # 安全规则
 │   │   └── frontend.md          # 前端特定规则
-│   ├── workflows/               # 工作流模板 (社区方案)
+│   ├── skills/                  # 项目级 Skills (开放标准兼容)
+│   │   └── my-skill/
+│   │       └── SKILL.md
+│   ├── agents/                  # 自定义子代理 (Subagents)
+│   │   ├── planner.md
+│   │   └── reviewer.md
+│   ├── output-styles/           # 自定义输出风格
+│   │   └── concise.md
+│   ├── docs/                    # 共享参考文档 (Skills 可引用)
+│   │   ├── coding-standards.md
+│   │   └── architecture.md
+│   ├── workflows/               # 工作流模板 (社区方案，非官方)
 │   │   ├── self-improvement-rules.md
 │   │   └── prompting-patterns.md
-│   ├── hooks/                   # 生命周期钩子脚本存放目录 (可选)
-│   │   ├── block-rm.sh          # 实际 hooks 在 settings.json 中配置
-│   │   ├── format-after-edit.sh
-│   │   └── notify-stop.sh
-│   │   # ⚠️ 注意: Claude Code 的 hooks 通过 settings.json (JSON) 配置，
-│   │   #    .claude/hooks/ 只是存放脚本的可选目录
-│   └── skills/                  # 项目级 Skills (开放标准兼容)
-│       └── my-skill/
-│           └── SKILL.md
+│   └── settings.json            # 权限、Hooks、环境变量等配置
+│
 │
 ├── src/
 │   ├── auth/
@@ -141,20 +145,54 @@ paths:
 - `CLAUDE.md` = 项目级上下文 (技术栈、命令、结构)
 - `rules/*.md` = 聚焦标准，应用于特定文件类型或目录
 
-### 3.3 Hooks (`.claude/hooks/*.py`)
+### 3.3 Hooks (通过 `settings.json` 配置)
 
-Claude Code 支持**确定性生命周期钩子** (Deterministic Hooks)，在特定事件发生时执行 Python 脚本：
+Claude Code 支持**确定性生命周期钩子** (Deterministic Hooks)，在特定事件发生时自动执行预设动作。与 CLAUDE.md 的"建议性"不同，Hooks 是**100% 强制执行**的。
 
-| 钩子 | 触发时机 |
+**配置位置**：`.claude/settings.json` 或 `~/.claude/settings.json` 中的 `hooks` 字段。
+
+**支持的事件**（官方）：
+
+| 事件 | 触发时机 |
 |------|---------|
-| `session_start.py` | 会话开始时 |
-| `user_prompt_submit.py` | 用户提交提示前 |
-| `pre_tool_use.py` | 工具调用前 |
-| `post_tool_use.py` | 工具调用后 |
-| `pre_compact.py` | 上下文压缩前 |
-| `subagent_stop.py` | 子 Agent 结束时 |
-| `stop.py` | 会话结束时 |
-| `notification.py` | 需要通知时 |
+| `SessionStart` | 会话开始时 |
+| `Setup` | 初始化阶段 |
+| `PreToolUse` | 工具调用前 |
+| `PostToolUse` | 工具调用后 |
+| `Notification` | 需要通知时 |
+| `Stop` | 会话结束时 |
+
+**Hook 类型**：
+
+| 类型 | 说明 |
+|------|------|
+| `command` | 执行 shell 命令（最常用） |
+| `prompt` | 发送 prompt 给 Claude 模型做判断 |
+| `agent` | 委派给子 agent 做判断 |
+| `http` | 发送 HTTP 请求 |
+| `mcp_tool` | 调用 MCP 工具 |
+
+**示例**（`settings.json`）：
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --write \"$CLAUDE_FILE_PATH\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+> ⚠️ **注意**：Claude Code 没有官方的 `.claude/hooks/` 配置目录。Hooks 只能通过 `settings.json` 配置。你可以在项目中的任意位置存放 shell 脚本，然后在 `command` 中引用它们。
 
 **Hook 与 CLAUDE.md 的区别**：
 - `CLAUDE.md` = **建议性** (Advisory)，Claude 可能忽略
@@ -203,10 +241,12 @@ Claude Code 支持子 Agent 委托：
 | 主指令文件 | `CLAUDE.md` | 项目/模块/全局上下文 | 无 |
 | 本地覆盖 | `CLAUDE.local.md` | 个人本地覆盖 | 无 |
 | 规则文件 | `.md` (在 rules/) | 路径限定规则 | `description`, `paths` |
-| 工作流 | `.md` (在 workflows/) | 自律/提示模板 | 无 |
-| 钩子 | `.py` | 生命周期自动化 | 无 |
-| 原则 | `.md` | 设计原则参考 | 无 |
-| 速查表 | `.md` | 一页参考 | 无 |
+| Skills | `SKILL.md` (在 skills/) | 可复用工作流 | `name`, `description`, `tools`, `model` |
+| 子代理 | `.md` (在 agents/) | 专用子代理 | `name`, `description`, `tools`, `disallowedTools`, `model` |
+| 输出风格 | `.md` (在 output-styles/) | 修改响应风格 | `name`, `description`, `keep-coding-instructions` |
+| 参考文档 | `.md` (在 docs/) | Skills 共享参考 | 无 |
+| 工作流 | `.md` (在 workflows/) | 自律/提示模板 (社区) | 无 |
+| 设置 | `settings.json` | Hooks、权限、环境变量 | JSON Schema |
 
 ---
 
@@ -235,8 +275,12 @@ Auto Memory                      (~/.claude/projects/<name>/memory/)
 | `~/.claude/CLAUDE.md` | `~/.agents/skills/global-guide/SKILL.md` | `~/.codex/AGENTS.md` | `~/.kimi/skills/global-guide/` | `~/.config/opencode/skills/global-guide/` |
 | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` |
 | `CLAUDE.local.md` | `.agents/local.md` | `AGENTS.override.md` | 子目录 `AGENTS.md` | `opencode.json` 配置 |
-| `.claude/rules/*.md` | `.agents/skills/*/` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skills/*/` |
-| `.claude/hooks/*.py` | `.agents/hooks/` | `~/.codex/hooks/` (如支持) | `~/.kimi/hooks/` (如支持) | `.opencode/hooks/` |
+| `.claude/rules/*.md` | `.agents/rules/*.md` | `.agents/rules/*.md` | `.agents/rules/*.md` | `.opencode/rules/*.md` |
+| `.claude/skills/*/` | `.agents/skills/*/` | `.agents/skills/*/` | `.agents/skills/*/` | `.opencode/skills/*/` |
+| `.claude/agents/*.md` | `.agents/agents/*.md` | `.agents/agents/*.md` | `.agents/agents/*.md` | `.opencode/agents/*.md` |
+| `.claude/hooks` (settings.json) | `.agents/hooks/` | `~/.codex/hooks/` (如支持) | `~/.kimi/hooks/` (如支持) | `.opencode/hooks/` |
+| `.claude/output-styles/*.md` | `.agents/output-styles/*.md` | 无直接等价 | 无直接等价 | 无直接等价 |
+| `.claude/docs/*.md` | `.agents/context/*.md` | `.agents/context/*.md` | `.agents/context/*.md` | `.opencode/context/*.md` |
 | `.claude/workflows/*.md` | `.agents/workflows/` | `.agents/workflows/` | `.agents/workflows/` | `.opencode/command/` |
 | `src/*/CLAUDE.md` | `src/*/AGENTS.md` | `src/*/AGENTS.md` | `src/*/AGENTS.md` | `src/*/AGENTS.md` |
 | `~/.claude/projects/*/memory/` | `.agents/memory/` | 无直接等价 | 无直接等价 | 无直接等价 |

@@ -576,10 +576,10 @@ Express.js API server.
 | `AGENTS.md` | `AGENTS.md` | `.claude/CLAUDE.md` | `AGENTS.md` | `AGENTS.md` |
 | `.opencode/skill/*/` | `.agents/skills/*/` | `.claude/skills/*/` | `.agents/skills/*/` | `.kimi/skills/*/` |
 | `.opencode/agents/` | `.agents/agents/` | `.claude/agents/` | `~/.codex/agents/` | `.kimi/agents/` |
-| `.opencode/commands/` | `.agents/commands/` | `.claude/workflows/` | `PLANS.md` | `plan mode` |
-| `.opencode/context/` | `.agents/context/` | `.claude/context/` | `.agents/context/` | `.kimi/context/` | ⚠️ 社区约定 |
-| `.opencode/hooks/` | `.agents/hooks/` | `.claude/hooks/` | `~/.codex/hooks/` | `~/.kimi/hooks/` |
-| `.opencode/prompts/` | `.agents/prompts/` | `.claude/prompts/` | `~/.codex/prompts/` | `~/.kimi/prompts/` |
+| `.opencode/commands/` | `.agents/commands/` | Plan Mode | `PLANS.md` | `plan mode` |
+| `.opencode/context/` | `.agents/context/` | `.claude/docs/` | `.agents/context/` | `.kimi/context/` | ⚠️ 社区约定 |
+| `.opencode/hooks/` | `.agents/hooks/` | `.claude/settings.json` (hooks) | `~/.codex/hooks/` | `~/.kimi/hooks/` |
+| `.opencode/prompts/` | `.agents/prompts/` | `.claude/output-styles/` | `~/.codex/prompts/` | `~/.kimi/prompts/` |
 | `.opencode/plugin/` | `.agents/plugins/` | 无直接等价 | 无直接等价 | 无直接等价 |
 | `.opencode/tool/` | `.agents/tools/` | 无直接等价 | 无直接等价 | 无直接等价 |
 | `opencode.json` | `.agents/config.json` | `~/.claude/settings.json` | `~/.codex/config.toml` | `~/.kimi/config.toml` |

@@ -393,7 +393,7 @@ Kimi 支持丰富的 slash 命令：
 | `.kimi/skills/` | `.agents/skills/` | `.claude/skills/` | `.agents/skills/` | `.opencode/skills/` |
 | `.kimi/agents/` | `.agents/agents/` | `.claude/agents/` | `~/.codex/agents/` | `.opencode/agent/` |
 | `agent.yaml` | `.agents/agent.yaml` | 无直接等价 | 无直接等价 | `.opencode/opencode.json` |
-| `system.md` | `.agents/prompts/system.md` | `.claude/prompts/` | `~/.codex/prompts/` | `.opencode/prompts/` |
-| `plan mode` | `.agents/plans/` | `.claude/workflows/` | `PLANS.md` | `.opencode/command/` |
+| `system.md` | `.agents/prompts/system.md` | `.claude/output-styles/` | `~/.codex/prompts/` | `.opencode/prompts/` |
+| `plan mode` | `.agents/plans/` | Plan Mode | `PLANS.md` | `.opencode/command/` |
 | `subagents` | `.agents/subagents/` | Claude subagents | Codex subagents | `.opencode/agent/subagents/` |
 | `~/.kimi/config.toml` | `.agents/config.toml` | `~/.claude/settings.json` | `~/.codex/config.toml` | `~/.config/opencode/config.json` |
