@@ -6,7 +6,7 @@
 
 ## 说明
 
-OpenCode 主要通过 `AGENTS.md` 和 Agent 定义文件配置行为。路径限定或主题限定的规则请通过 Agent 的 `system_prompt_args` 或 AGENTS.md 中的相关章节实现。
+OpenCode 主要通过 `AGENTS.md`、`opencode.json` 中的 `instructions` 字段和 Agent 定义文件配置行为。路径限定或主题限定的规则请通过 AGENTS.md 中的相关章节实现。
 
 ## 来源
 

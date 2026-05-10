@@ -753,7 +753,7 @@ When activated (via prompt prefix `/plan` or Tab switch):
 
 | 你的主力工具 | 推荐方案 |
 |-------------|---------|
-| **OpenCode** | 原生 `agent/*.md`，最完整 |
+| **OpenCode** | 原生 `agents/*.md`，最完整 |
 | **Kimi** | 原生 `agent.yaml` + `system.md`，几乎和 OpenCode 一样强大 |
 | **GitHub Copilot** | 原生 `.github/agents/*.agent.md`，VS Code 内体验好 |
 | **Claude Code** | Rules 模拟法 (`[PLAN]`/`[BUILD]`/`[TEST]` 前缀) |

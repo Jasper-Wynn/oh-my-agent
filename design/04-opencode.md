@@ -26,7 +26,8 @@ OpenCode 的目录设计围绕六个核心概念：
 
 ```
 ~/.config/opencode/
-├── config.json                  # OpenCode 全局配置
+├── opencode.json                # OpenCode 全局配置
+├── tui.json                     # TUI 专属配置（可选）
 ├── skills/                      # 全局 Skills
 │   └── git-release/
 │       └── SKILL.md
@@ -398,9 +399,14 @@ your-project/
 
 ### 3.2 `opencode.json` (主配置文件)
 
+支持 **JSON** 和 **JSONC**（带注释的 JSON）格式。
+
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "small_model": "anthropic/claude-haiku-4-20250514",
+  "default_agent": "build",
   "instructions": ["packages/*/AGENTS.md"],
   "permission": {
     "edit": "ask",
@@ -423,23 +429,116 @@ your-project/
 }
 ```
 
+**配置加载顺序**（后加载的覆盖先加载的冲突键，非冲突键合并保留）：
+1. Remote config (`.well-known/opencode`) — 组织级默认
+2. Global config (`~/.config/opencode/opencode.json`)
+3. Custom config (`OPENCODE_CONFIG` 环境变量)
+4. Project config (`opencode.json`)
+5. `.opencode` directories — agents, commands, plugins
+6. Inline config (`OPENCODE_CONFIG_CONTENT`)
+7. Managed config files (`/Library/Application Support/opencode/` 等)
+8. macOS managed preferences (`.mobileconfig` via MDM) — 最高优先级，用户不可覆盖
+
+**环境变量**：
+- `OPENCODE_CONFIG` — 自定义配置文件路径
+- `OPENCODE_CONFIG_DIR` — 自定义配置目录（会被当作 `.opencode` 目录搜索）
+- `OPENCODE_CONFIG_CONTENT` — 内联 JSON 配置
+- `OPENCODE_TUI_CONFIG` — 自定义 TUI 配置文件路径
+
+**常用顶层配置项**：
+- `model` — 默认模型
+- `small_model` — 轻量级任务模型（标题生成等）
+- `default_agent` — 默认启动的 primary agent（不能是 subagent，不存在时回退到 `build`）
+- `instructions` — 指令文件路径数组，支持 glob
+- `permission` — 全局权限
+- `agent` — agent 定义
+- `command` — 自定义命令
+- `snapshot` — `false` 禁用快照（禁用后无法 undo）
+- `autoupdate` — `false` 或 `"notify"`
+- `shell` — 指定交互式 shell
+- `server` — `opencode serve/web` 的服务器配置
+- `mcp` — MCP 服务器配置
+- `plugin` — npm 插件列表
+- `formatter` — 代码格式化器
+- `lsp` — LSP 服务器
+- `share` — `"manual"` / `"auto"` / `"disabled"`
+- `disabled_providers` / `enabled_providers` — 禁用/启用特定 provider
+- `compaction` — 上下文压缩行为 (`auto`, `prune`, `reserved`)
+- `watcher` — 文件监视器忽略模式
+- `experimental` — 实验性功能
+
+**变量替换**：配置中支持两种变量语法：
+- `{env:VARIABLE_NAME}` — 引用环境变量
+- `{file:path/to/file}` — 引用文件内容（相对路径或绝对路径 `~`/`/`）
+
 ### 3.3 Agent 定义 (`agents/*.md`)
 
-OpenCode 的 Agent 定义是 Markdown 文件，文件名即 agent 名称。支持 YAML frontmatter：
+#### 内置 Agent
 
-**必填字段**：
-- `description` — agent 用途描述（用于自动匹配）
+OpenCode 内置以下 agent：
 
-**常用字段**：
-- `mode` — `primary`（主 agent，Tab 切换）/ `subagent`（子 agent，@ 调用）/ `all`
+**Primary agents**（Tab 键切换）：
+- `build` — 默认主 agent，所有工具启用
+- `plan` — 受限 agent，`edit` 和 `bash` 默认 `ask`，适合分析和规划
+- `compaction` — 隐藏系统 agent，自动压缩长上下文
+- `title` — 隐藏系统 agent，自动生成会话标题
+- `summary` — 隐藏系统 agent，自动创建会话摘要
+
+**Subagents**（@ 调用或自动委派）：
+- `general` — 通用子 agent，除 todo 外全工具访问
+- `explore` — 只读子 agent，用于代码库探索
+
+#### 必填字段
+- `description` (required) — agent 用途描述，用于自动匹配和展示
+
+#### 常用字段
+- `mode` — `primary`（主 agent，Tab 切换）/ `subagent`（子 agent，@ 调用）/ `all`，默认 `all`
 - `model` — 模型 ID，格式 `provider/model-id`
-- `temperature` — 0.0-1.0，默认模型相关
+- `prompt` — 自定义系统提示文件路径，如 `{file:./prompts/build.txt}`
+- `temperature` — 0.0-1.0，默认模型相关（多数模型默认 0，Qwen 默认 0.55）
+- `top_p` — 0.0-1.0，控制响应多样性（temperature 的替代方案）
 - `permission` — 权限对象，`ask` / `allow` / `deny`
 - `steps` — 最大迭代步数
-- `hidden` — `true` 时隐藏于 @ 自动补全菜单
-- `color` — UI 显示颜色（hex 或主题色名）
+- `hidden` — `true` 时隐藏于 @ 自动补全菜单（仍可通过 Task 工具调用）
+- `color` — UI 显示颜色（hex 或主题色名：`primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`）
+- `disable` — `true` 时禁用该 agent
+- 其他字段会直接透传给模型 provider（如 OpenAI 的 `reasoningEffort`）
 
-⚠️ `tools` 字段已废弃，请使用 `permission`。
+#### 权限键列表
+
+| 键 | 控制的工具 |
+|---|---|
+| `read` | `read` |
+| `edit` | `write`, `edit`, `apply_patch` |
+| `glob` | `glob` |
+| `grep` | `grep` |
+| `list` | `list` |
+| `bash` | `bash` |
+| `task` | `task`（控制可调用哪些 subagent，支持 glob 匹配） |
+| `external_directory` | 项目 worktree 外的读写操作 |
+| `todowrite` | `todowrite`, `todoread` |
+| `webfetch` | `webfetch` |
+| `websearch` | `websearch` |
+| `lsp` | `lsp` |
+| `skill` | `skill` |
+| `question` | `question` |
+| `doom_loop` | agent 卡死时的恢复提示 |
+
+`read`, `edit`, `glob`, `grep`, `list`, `bash`, `task`, `external_directory`, `lsp`, `skill` 支持细粒度控制（glob/pattern → action 的对象），其余键仅支持简写。
+
+#### 默认值
+OpenCode 默认**允许所有操作**（`allow`），无需显式批准。建议至少设置 `edit: ask` 和 `bash: ask` 作为安全防护。
+
+#### 通配符规则
+在对象形式的权限中，最后匹配的规则优先。因此应将 `*` 通配符放在前面，具体规则放在后面：
+```yaml
+permission:
+  bash:
+    "*": ask
+    "git status *": allow
+```
+
+⚠️ `tools` 字段已废弃，新配置请使用 `permission`。但顶层配置中的 `tools` 选项仍向后兼容，agent 配置中的 `tools` 会映射为等效的 `permission`（`true` → `{"*": "allow"}`，`false` → `{"*": "deny"}`）。
 
 ```markdown
 ---
@@ -591,7 +690,7 @@ OpenCode 插件系统：
 | `.opencode/context/` | 项目 | ⚠️ | 领域知识 (社区约定，非官方标准) |
 | `.opencode/hooks/` | 项目 | ⚠️ | 生命周期钩子 (未在官方文档中确认) |
 | `.opencode/prompts/` | 项目 | ⚠️ | 提示词变体 (未在官方文档中确认) |
-| `.opencode/plugins/` | 项目 | ⚠️ | 插件 (未在官方文档中确认) |
+| `.opencode/plugins/` | 项目 | 是 | 插件（官方支持 `.opencode/plugins/` 和 `~/.config/opencode/plugins/`） |
 | `.opencode/tools/` | 项目 | ⚠️ | 自定义工具 (未在官方文档中确认) |
 | `.opencode/skills/*/SKILL.md` | 项目 | 是 | Skills |
 | `~/.config/opencode/skills/` | 全局 | 否 | 全局 Skills |

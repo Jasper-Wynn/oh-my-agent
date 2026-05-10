@@ -1,8 +1,11 @@
 # pre_tool_use
 
 > **作用**: 工具调用前时执行
-> **工具**: OpenCode
+> **工具**: OpenCode ⚠️
 > **类型**: 确定性执行（非建议性）
+
+> ⚠️ **注意**: OpenCode 官方文档未将 hooks 作为独立功能标准化。官方仅提到 "Plugins extend OpenCode with custom tools, hooks, and integrations"。如需实现类似功能，建议通过 `.opencode/plugins/` 或 `plugin` 配置项开发插件。
+> 此文件属于 `.agents/hooks/` 通用兼容层，供其他支持脚本 hooks 的工具使用。
 
 ## 影响范围
 
